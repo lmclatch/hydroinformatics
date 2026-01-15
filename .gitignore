@@ -1,3 +1,11 @@
+# Data files to ignore for hydroinformatics projects
+*.csv
+*.xlsx
+*.xls
+*.json
+
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
