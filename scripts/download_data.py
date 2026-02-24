@@ -38,7 +38,7 @@ ashley_creek_gauge = nwis.get_record(sites=site_id, service='dv', parameterCd=pa
 start=start_date, end=end_date)
 
 #set directory
-os.chdir('hydroinformatics/hydroinformatics')
+os.chdir('hydroinformatics')
 
 #Save data to respective data folder
 reservoir_gauge.to_csv('data/reservoir_gauge.csv')
