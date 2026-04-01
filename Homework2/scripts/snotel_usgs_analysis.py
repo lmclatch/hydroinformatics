@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib.dates as mdates
 
 #Load data
-snotel_data = pd.read_csv('data/snotel_data.csv')
+snotel_data = pd.read_csv('C:\\Users\\Liza\\Documents\\GitHub\\hydroinformatics\\Homework2\\data\\snotel_data.csv')
 snotel_data['datetime'] = pd.to_datetime(snotel_data['datetime'])
 #Clip to WY 2021-2025
 snotel_data = snotel_data[(snotel_data['datetime'] >= '2021-10-01') & (snotel_data['datetime'] <= '2025-09-30')]
@@ -117,13 +117,13 @@ fig.legend(handles=legend_elements, loc='lower center', ncol=8,
 plt.tight_layout()
  
 os.makedirs('Figures', exist_ok=True)
-fig.savefig(f"Figures/{SITE_NAME.replace(' ', '_')}_WY2021-2025_snotelanalysis.png",
-            dpi=300, bbox_inches='tight')
+#fig.savefig(f"Figures/{SITE_NAME.replace(' ', '_')}_WY2021-2025_snotelanalysis.png",
+            #dpi=300, bbox_inches='tight')
 plt.show()
  
 
 #USGS Analysis
-usgs_data = pd.read_csv('data/streamflow_data.csv')
+usgs_data = pd.read_csv('C:\\Users\\Liza\\Documents\\GitHub\\hydroinformatics\\Homework2\\data\\streamflow_data.csv')
 #Plot USGS streamflow data:April, May, June, July, August, and September
 usgs_data['datetime'] = pd.to_datetime(usgs_data['datetime'])
 usgs_data['month'] = usgs_data['datetime'].dt.month
@@ -196,7 +196,7 @@ for ax in axes[0, :]:
 
 plt.subplots_adjust(wspace=0.25, hspace=0.3)
 plt.tight_layout()
-plt.savefig('Figures/usgs_streamflow_by_month.png')
+#plt.savefig('Figures/usgs_streamflow_by_month.png')
 plt.show()
 
 #Peak SWE parity plots for April, May, June, July, August, and September streamflow
@@ -249,7 +249,7 @@ for ax, month in zip(axes.flat, months_of_interest):
     ax.grid(True, linestyle='--', alpha=0.5)
  
 plt.tight_layout()
-plt.savefig('Figures/usgs_parity_plots.png', dpi=300, bbox_inches='tight')
+#plt.savefig('Figures/usgs_parity_plots.png', dpi=300, bbox_inches='tight')
 plt.show()
 
 #check out april 1st stats
