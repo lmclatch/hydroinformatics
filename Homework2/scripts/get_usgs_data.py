@@ -7,8 +7,8 @@ import pandas as pd
 #Alaska: USGS, 15274600 SNOTEL: 1070
 
 #Pull streamflow data
-site_id = '15290000' # Ship C NR Anchorage AK - USGS-15276000
-start_date = "1980-01-01"
+site_id = '15290000' # L Susitna R NR Palmer AK - USGS-15290000
+start_date = "1980-10-01"
 end_date = "2025-09-30"
 
 Ak_streamflow_data,meta = nwis.get_dv(sites=site_id,
