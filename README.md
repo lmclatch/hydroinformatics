@@ -1,6 +1,6 @@
 # Repository for CVEEN6990 HydroInformatics Assignments
 
-![alt text]("C:\Users\Liza\Downloads\9a0437ba2eed3416345857be1ebb0be2.jpg")
+![alt text](""C:\Users\Liza\Documents\GitHub\hydroinformatics\9a0437ba2eed3416345857be1ebb0be2.jpg")
 
 # Assignment #2 Analyzing Connections Between SWE and Streamflow in Alaska
 
