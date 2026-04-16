@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import os
 
-#os.chdir("hydroinformatics/hydroinformatics/homework3")
+os.chdir("hydroinformatics/hydroinformatics/homework3")
 #Bring in all data
 #streamflow data
 little_susitna_streamflow = pd.read_csv('data/little_susitna_streamflow.csv')
@@ -77,3 +77,5 @@ print(final_df[['gauge_id']].nunique())
 # print("Ship Creek ID:", ship_creek_streamflow['gauge_id'].unique())
 # print("Matanuska ID:", manatuska_river_gauge['gauge_id'].unique())
 # print("Campbell Creek ID:", campbell_creek_gauge['gauge_id'].unique())
+
+final_df.to_csv('data/final_lstm_data.csv')
