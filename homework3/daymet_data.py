@@ -6,14 +6,14 @@ from pathlib import Path
 import os
 ''' Pydamet does not support Alaska, so trying to find my centroids then access the REST Api directly
 https://daymet.ornl.gov/single-pixel/api/data?lat=40.0&lon=-105.0&vars=tmin,tmax,prcp,srad,vp,swe,dayl&start=1990-01-01&end=2024-12-31 '''
-os.chdir("hydroinformatics/hydroinformatics/homework3")
+#os.chdir("hydroinformatics/hydroinformatics/homework3")
 
 # ── Configuration ────────────────────────────────────────────────────────────
 BASINS = {
     "little_susitna": {"file": "data/littlesu_streamstats.geojson", "gauge_id": "15290000"},
-    "matanuska": {"file": "data/manatuska_streamstats.geojson", "gauge_id": "USGS-15284000"},
-    "ship_creek": {"file": "data/shipcreek_streamstats.geojson", "gauge_id": "USGS-15276000"},
-    "campbell_creek": {"file": "data/campbellcreek_streamstats.geojson", "gauge_id": "USGS-15274600"},
+    "matanuska": {"file": "data/manatuska_streamstats.geojson", "gauge_id": "15284000"},
+    "ship_creek": {"file": "data/shipcreek_streamstats.geojson", "gauge_id": "15276000"},
+    "campbell_creek": {"file": "data/campbellcreek_streamstats.geojson", "gauge_id": "15274600"},
 }
 
 # The API uses comma-separated strings for variables
