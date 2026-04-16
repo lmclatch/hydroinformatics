@@ -1,0 +1,80 @@
+import pandas as pd
+import geopandas as gpd
+import requests
+import io
+from pathlib import Path
+import os
+''' Pydamet does not support Alaska, so trying to find my centroids then access the REST Api directly
+https://daymet.ornl.gov/single-pixel/api/data?lat=40.0&lon=-105.0&vars=tmin,tmax,prcp,srad,vp,swe,dayl&start=1990-01-01&end=2024-12-31 '''
+os.chdir("hydroinformatics/hydroinformatics/homework3")
+
+# ── Configuration ────────────────────────────────────────────────────────────
+BASINS = {
+    "little_susitna": {"file": "data/littlesu_streamstats.geojson", "gauge_id": "190205051202"},
+    "matanuska": {"file": "data/manatuska_streamstats.geojson", "gauge_id": "USGS-15284000"},
+    "ship_creek": {"file": "data/shipcreek_streamstats.geojson", "gauge_id": "USGS-15276000"},
+    "campbell_creek": {"file": "data/campbellcreek_streamstats.geojson", "gauge_id": "USGS-15274600"},
+}
+
+# The API uses comma-separated strings for variables
+VARS = "tmin,tmax,prcp,srad,vp,swe,dayl"
+START_DATE = "1990-01-01"
+END_DATE = "2024-12-31"
+
+GEOJSON_DIR = Path(".")
+OUTPUT_DIR = Path("data/daymet_api_output")
+OUTPUT_DIR.mkdir(exist_ok=True)
+
+all_dfs = []
+
+# ── Processing ───────────────────────────────────────────────────────────────
+
+for key, info in BASINS.items():
+    print(f"Processing {key} ({info['gauge_id']})...")
+    
+    #Get Coordinates from GeoJSON
+    gdf = gpd.read_file(GEOJSON_DIR / info["file"]).to_crs("EPSG:4326")
+    poly = gdf[gdf.geometry.geom_type == "Polygon"].geometry.iloc[0]
+    lon, lat = poly.centroid.x, poly.centroid.y
+    
+    #Build the REST API URL
+    #Daymet API takes lat/lon as query parameters
+    url = (
+        f"https://daymet.ornl.gov/single-pixel/api/data?"
+        f"lat={lat}&lon={lon}&vars={VARS}&start={START_DATE}&end={END_DATE}"
+    )
+    
+    # 3. Request the data
+    try:
+        response = requests.get(url, timeout=30)
+        
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Daymet returns a CSV with several header rows (metadata)
+            # We skip the first 6 rows to get to the data
+            df = pd.read_csv(io.StringIO(response.text), skiprows=6)
+            
+            # Clean up: Create a proper date column
+            # Daymet gives 'year' and 'yday'. We convert to datetime.
+            df['date'] = pd.to_datetime(df['year'].astype(str) + df['yday'].astype(str), format='%Y%j')
+            
+            # Add identifiers
+            df["basin_name"] = key
+            df["gauge_id"] = info["gauge_id"]
+            
+            # Save individual file
+            df.to_csv(OUTPUT_DIR / f"{key}_daymet.csv", index=False)
+            all_dfs.append(df)
+            print(f"  ✓ Downloaded {len(df)} days of data.")
+        else:
+            print(f"  ✗ API Error {response.status_code}: {response.text}")
+            
+    except Exception as e:
+        print(f"  ✗ Connection Error: {e}")
+
+# 4. Combine and Save
+if all_dfs:
+    master_df = pd.concat(all_dfs, ignore_index=True)
+    master_df.to_csv(OUTPUT_DIR / "alaska_basins_weather_master.csv", index=False)
+    print("\n" + "="*30)
+    print(f"Final Master File Created with {len(master_df)} rows.")
