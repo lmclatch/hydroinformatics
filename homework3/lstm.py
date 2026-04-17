@@ -295,8 +295,8 @@ axes[1].legend()
 
 plt.tight_layout()
 plt.savefig('lstm_results.png', dpi=150)
-plt.show()
-print("Plot saved → lstm_results.png")
+#plt.show()
+#print("Plot saved → lstm_results.png")
 
 # --- 13e. Performance summary (test basin only) ----------------------------
 summary = pd.DataFrame([{
@@ -313,3 +313,35 @@ print("  TEST BASIN PERFORMANCE SUMMARY")
 print("=" * 60)
 print(summary.round(3).to_string())
 print("=" * 60)
+
+# =============================================================================
+# 14. SCATTER PLOT — Predicted vs. Observed with 1:1 line
+# =============================================================================
+fig, ax = plt.subplots(figsize=(6.5, 6.5))
+
+ax.scatter(y_true, y_pred, s=14, alpha=0.4, color='#1f4e79',
+           edgecolor='none', label='Daily predictions')
+
+# 1:1 reference line
+lim = max(y_true.max(), y_pred.max()) * 1.05
+ax.plot([0, lim], [0, lim], 'k--', lw=1.2, alpha=0.7, label='1:1 line')
+
+# linear regression fit
+slope, intercept = np.polyfit(y_true, y_pred, 1)
+xs = np.array([0, lim])
+ax.plot(xs, slope * xs + intercept, color='#c0392b', lw=1.5,
+        label=f'Fit: y = {slope:.2f}x + {intercept:.2f}')
+
+ax.set_xlim(0, lim)
+ax.set_ylim(0, lim)
+ax.set_xlabel('Observed streamflow (cms)')
+ax.set_ylabel('Predicted streamflow (cms)')
+ax.set_title(f'Test Basin {TEST_BASIN_ID} — Predicted vs. Observed')
+ax.legend(loc='lower right')
+ax.set_aspect('equal', adjustable='box')
+ax.grid(True, alpha=0.3, linestyle='--')
+
+plt.tight_layout()
+plt.savefig('scatter_1to1.png', dpi=200, bbox_inches='tight')
+plt.show()
+print("Saved → scatter_1to1.png")
