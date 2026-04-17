@@ -1,6 +1,6 @@
-# hydroinformatics
+# Hydroinformatics
 CVEEN 6920 at the University of Utah
-#Assignment #3
+# Assignment #3
 Goal: Predicting daily streamflow in southcentral Alaska basins using a Long Short-Term Memory (LSTM) neural network trained on Daymet climate forcings and catchment attributes.
 
 Study Basins
