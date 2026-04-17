@@ -16,3 +16,5 @@ Validation: Matanuska, Little Susitna, Campbell Creek — 2017 onward
 Test: Ship Creek (held out entirely — zero-shot basin generalization)
 
 Evaluation metrics: MAE, RMSE, R², Nash-Sutcliffe Efficiency (NSE)
+
+Relevant streamstats deliniated files can be found in /data
