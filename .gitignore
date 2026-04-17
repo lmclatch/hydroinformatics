@@ -3,6 +3,9 @@
 *.xlsx
 *.xls
 *.json
+*.gz
+*.pt
+*.png
 
 
 
