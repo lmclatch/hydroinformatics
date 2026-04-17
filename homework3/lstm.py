@@ -29,7 +29,7 @@ torch.manual_seed(SEED)
 FILE_PATH       = "data/final_lstm_data.csv"
 DATE_COL        = "date"
 TARGET_COL      = "flow_cms"
-TEST_BASIN_ID   = "15290000"   # Little Susitna — held out entirely
+TEST_BASIN_ID   = "15276000"   #  — held out entirely
 VAL_CUTOFF_YEAR = 2016         # train ≤ 2016, val > 2016 (for the 3 training basins)
 
 LOOKBACK_DAYS   = 90
@@ -72,7 +72,12 @@ feature_cols  = [c for c in numeric_cols if c not in exclude_cols]
 
 print(f"\nTarget : {TARGET_COL}")
 print(f"Features ({len(feature_cols)}): {feature_cols}")
-
+df[feature_cols + [TARGET_COL]] = (
+    df[feature_cols + [TARGET_COL]]
+    .interpolate(method='linear', limit_direction='both')
+    .ffill()
+    .bfill()
+)
 # =============================================================================
 # 5. BASIN-BASED TRAIN / VAL / TEST SPLIT
 # =============================================================================
@@ -85,7 +90,13 @@ val_df   = train_val_df[train_val_df[DATE_COL].dt.year  > VAL_CUTOFF_YEAR].copy(
 print(f"\nTrain   : {len(train_df):,} rows | basins: {train_df['gauge_id'].unique().tolist()}")
 print(f"Val     : {len(val_df):,}  rows | basins: {val_df['gauge_id'].unique().tolist()}")
 print(f"Test    : {len(test_df):,}  rows | basin : {TEST_BASIN_ID}")
-
+#==============================================================================
+# Feature engineering
+#==============================================================================
+for df_ in [train_df, val_df, test_df]:
+    doy = df_['date'].dt.dayofyear
+    df_['doy_sin'] = np.sin(2 * np.pi * doy / 365.25)
+    df_['doy_cos'] = np.cos(2 * np.pi * doy / 365.25)
 # =============================================================================
 # 6. SCALING  — fit ONLY on training data to prevent leakage
 # =============================================================================
@@ -169,7 +180,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 print(f"\nModel parameters: {sum(p.numel() for p in model.parameters()):,}")
 
 # =============================================================================
-# 10. EVALUATE HELPER  (replaces the missing LSTM_helper.evaluate)
+# 10. EVALUATE HELPER  
 # =============================================================================
 def evaluate(model, criterion, device, loader):
     """
