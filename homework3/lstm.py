@@ -297,3 +297,19 @@ plt.tight_layout()
 plt.savefig('lstm_results.png', dpi=150)
 plt.show()
 print("Plot saved → lstm_results.png")
+
+# --- 13e. Performance summary (test basin only) ----------------------------
+summary = pd.DataFrame([{
+    'basin': TEST_BASIN_ID,
+    'split': 'test',
+    'MAE' : mae,
+    'RMSE': rmse,
+    'R2'  : r2,
+    'NSE' : nse,
+}]).set_index('basin')
+
+print("\n" + "=" * 60)
+print("  TEST BASIN PERFORMANCE SUMMARY")
+print("=" * 60)
+print(summary.round(3).to_string())
+print("=" * 60)
